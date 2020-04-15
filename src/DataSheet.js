@@ -353,7 +353,7 @@ export default class DataSheet extends PureComponent {
     })
   }
 
-  searchForNextSelectablePos (isCellNavigable, data, start, offsets, jumpRow) {
+  searchForNextSelectablePos (isCellNavigable, data, start, offsets, jumpRow, retry) {
     const previousRow = (location) => ({ i: location.i - 1, j: data[0].length - 1 })
     const nextRow = (location) => ({ i: location.i + 1, j: 0 })
     const advanceOffset = (location) => ({i: location.i + offsets.i, j: location.j + offsets.j})
@@ -386,7 +386,9 @@ export default class DataSheet extends PureComponent {
     } else if (isCellDefined(newLocation)) {
       return newLocation
     } else {
-      return null
+      // Retries once as there are cases in which pressing Enter in the last cell adds a new row that is not navigable in the first attempt
+      if(!retry) setTimeout(() => searchForNextSelectablePos (isCellNavigable, data, start, offsets, jumpRow, true), 100);      
+      return null;
     }
   }
 
