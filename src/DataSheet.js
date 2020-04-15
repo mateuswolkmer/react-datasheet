@@ -390,7 +390,7 @@ export default class DataSheet extends PureComponent {
     }
   }
 
-  handleNavigate (e, offsets, jumpRow, retried) {
+  handleNavigate (e, offsets, jumpRow) {
     if (offsets && (offsets.i || offsets.j)) {
       const { data } = this.props
       const { start } = this.getState()
@@ -404,10 +404,7 @@ export default class DataSheet extends PureComponent {
         const newLocation = this.searchForNextSelectablePos(isCellNavigable, data, start, offsets, jumpRow)
         if (newLocation) {
           this.updateLocationSingleCell(newLocation)
-        } else if (!retried) {
-          // Retries once as there are cases in which pressing Enter in the last cell adds a new row that is not navigable in the first attempt
-          setTimeout(() => handleNavigate(e, offsets, jumpRow, true), 100);    
-        }
+        } 
       }
     }
   }
