@@ -385,14 +385,12 @@ export default class DataSheet extends PureComponent {
       return this.searchForNextSelectablePos(isCellNavigable, data, newLocation, offsets, jumpRow)
     } else if (isCellDefined(newLocation)) {
       return newLocation
-    } else {
-      // Retries once as there are cases in which pressing Enter in the last cell adds a new row that is not navigable in the first attempt
-      if(!retry) setTimeout(() => searchForNextSelectablePos (isCellNavigable, data, start, offsets, jumpRow, true), 100);      
+    } else {  
       return null;
     }
   }
 
-  handleNavigate (e, offsets, jumpRow) {
+  handleNavigate (e, offsets, jumpRow, retried) {
     if (offsets && (offsets.i || offsets.j)) {
       const { data } = this.props
       const { start } = this.getState()
@@ -406,6 +404,9 @@ export default class DataSheet extends PureComponent {
         const newLocation = this.searchForNextSelectablePos(isCellNavigable, data, start, offsets, jumpRow)
         if (newLocation) {
           this.updateLocationSingleCell(newLocation)
+        } else if (!retried) {
+          // Retries once as there are cases in which pressing Enter in the last cell adds a new row that is not navigable in the first attempt
+          setTimeout(() => handleNavigate(e, offsets, jumpRow, true), 100);    
         }
       }
     }
